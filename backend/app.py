@@ -8,7 +8,14 @@ import shutil
 
 from src.ingestion.loader import ingest_document
 from src.ingestion.vector_store import delete_from_vector_store, delete_user_vector_store
-from src.generation.rag_chain import get_rag_response
+
+# ✅ Wrap startup logic safely
+try:
+    from src.generation.rag_chain import get_rag_response
+    RAG_INITIALIZED = True
+except Exception as e:
+    print("ERROR DURING STARTUP:", str(e))
+    RAG_INITIALIZED = False
 
 SUPPORTED_EXTENSIONS = (".pdf", ".txt", ".csv", ".docx", ".xlsx", ".html")
 
@@ -193,6 +200,9 @@ async def query(
     use_reranker: bool = Query(True, description="Enable cross-encoder reranking"),
 ):
     """Query the RAG system with optional file filter, top_k, and reranking."""
+    if not RAG_INITIALIZED:
+        return {"error": "RAG not initialized"}
+
     try:
         response_payload = get_rag_response(
             query=q,
