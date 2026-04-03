@@ -201,8 +201,6 @@ def ingest_document(file_path: str, user_id: str) -> int:
             valid_chunks.append(chunk)
 
     print(f"[loader] {len(valid_chunks)} chunks created for '{filename}'")
-    if valid_chunks:
-        print(f"[loader] Chunk preview (first 100 chars): {repr(valid_chunks[0].page_content[:100])}")
 
     # 4. Embed + store
     try:

@@ -252,9 +252,6 @@ def get_rag_response(
         # Logging only - NOT passed to LLM
         print(f"\n[Chunk {i+1}/{len(docs)}] (User: {user_id_m})")
         print(f"  Source: {filename} p.{page} | Chars: {len(doc.page_content)}")
-        print(f"  {sep}")
-        print(doc.page_content)
-        print(f"  {sep}")
         
         # Clean context for LLM (no debug strings!)
         context_parts.append(doc.page_content)
