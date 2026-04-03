@@ -6,7 +6,7 @@ langchain-core
 langchain-community
 faiss-cpu
 sentence-transformers
-
+langchain-huggingface
 pandas
 openpyxl
 beautifulsoup4
