@@ -1,0 +1,21 @@
+# Virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# Vector DB / FAISS
+data/
+vector_store/
+
+# OS files
+.DS_Store
+Thumbs.db

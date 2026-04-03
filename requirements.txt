@@ -1,0 +1,30 @@
+fastapi
+uvicorn
+langchain
+langchain-community
+langchain-huggingface
+langchain-experimental
+faiss-cpu
+sentence-transformers
+pypdf
+groq
+python-multipart
+python-dotenv
+
+# Multimodal extraction
+pdfplumber
+pymupdf
+tabulate
+transformers
+torch
+Pillow
+
+# Production vector store (optional — needs Qdrant running)
+qdrant-client
+langchain-qdrant
+
+# New document loaders
+docx2txt
+beautifulsoup4
+openpyxl
+pandas
