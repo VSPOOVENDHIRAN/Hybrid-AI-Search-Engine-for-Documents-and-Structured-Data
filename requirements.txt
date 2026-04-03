@@ -6,9 +6,7 @@ langchain-core
 langchain-community
 faiss-cpu
 sentence-transformers
-pymupdf
-#pytesseract
-pillow
+
 pandas
 openpyxl
 beautifulsoup4

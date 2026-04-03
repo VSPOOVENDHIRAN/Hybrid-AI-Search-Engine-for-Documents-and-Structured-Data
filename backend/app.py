@@ -1,6 +1,9 @@
+import sys
+import os
+sys.path.append(os.path.abspath("."))
+
 from fastapi import FastAPI, UploadFile, File, Header, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-import os
 import shutil
 
 from src.ingestion.loader import ingest_document
@@ -33,6 +36,12 @@ app.add_middleware(
 )
 
 UPLOAD_DIR = "data/uploads"
+
+
+# ─── ROOT ─────────────────────────────────────────────────────────────────────
+@app.get("/")
+def root():
+    return {"message": "API is running"}
 
 
 # ─── UPLOAD ───────────────────────────────────────────────────────────────────
@@ -198,3 +207,7 @@ async def query(
         raise HTTPException(status_code=404, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Query failed: {str(e)}")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("backend.app:app", host="0.0.0.0", port=8000)

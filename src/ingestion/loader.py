@@ -6,12 +6,7 @@ from langchain_community.document_loaders import TextLoader, CSVLoader, Docx2txt
 from bs4 import BeautifulSoup
 from langchain_core.documents import Document
 import pandas as pd
-from PIL import Image
-import pytesseract
 from pypdf import PdfReader
-import fitz
-
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 
 from src.ingestion.column_store import save_columns
 
@@ -80,50 +75,12 @@ def load_pdf(file_path):
         if extracted:
             text += extracted
 
-    # ✅ Case 1: Normal PDF
-    if text.strip():
-        print("[INFO] Normal PDF detected")
-        return [Document(page_content=text)]
-
-    # ❌ Case 2: Scanned PDF → OCR
-    print("[INFO] No text found → using PyMuPDF OCR")
-
-    doc = fitz.open(file_path)
-    full_text = ""
-
-    for i, page in enumerate(doc):
-        pix = page.get_pixmap()
-        img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
-
-        ocr_text = pytesseract.image_to_string(img)
-        print(f"[DEBUG] Page {i+1} OCR length: {len(ocr_text)}")
-
-        full_text += ocr_text + "\n"
-
-    if not full_text.strip():
-        raise ValueError("OCR failed: no text extracted")
-
-    return [Document(page_content=full_text)]
-
-
-def load_image(file_path):
-    print(f"[loader] Processing image: {file_path}")
-
-    try:
-        image = Image.open(file_path)
-        text = pytesseract.image_to_string(image)
-
-        if not text.strip():
-            raise ValueError("No text detected in image")
-
-        print(f"[loader] Extracted text length: {len(text)}")
-        print(f"[DEBUG] OCR Output Preview:\n{text[:200]}")
-
-        return [Document(page_content=text)]
-
-    except Exception as e:
-        print(f"[ERROR] processing failed: {e}")
+    if not text.strip():
+        print("[loader] No text found in document (OCR not supported in deployment)")
         return []
+
+    print("[INFO] Normal PDF detected")
+    return [Document(page_content=text)]
 
 def ingest_document(file_path: str, user_id: str) -> int:
     """Ingest a document into the user's FAISS vector store.
@@ -162,8 +119,7 @@ def ingest_document(file_path: str, user_id: str) -> int:
             documents = load_html(file_path)
         elif ext == ".xlsx":
             documents = load_xlsx(file_path, filename, user_id)
-        elif ext in [".png", ".jpg", ".jpeg"]:
-            documents = load_image(file_path)
+
         else:
             print(f"[loader] Unsupported file type: {ext}")
             return 0
